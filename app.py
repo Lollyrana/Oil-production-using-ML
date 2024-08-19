@@ -85,7 +85,7 @@ if st.button('Predict Oil Production'):
     st.write(
     pd.DataFrame(
         {
-            "Algorithm use": ["Linear Regression", "Polynomial Regression","Neural Network(CNN)"],
+            "Algorithm use": ["Linear Regression", "Polynomial Regression","Neural Network(ANN)"],
             "Oil Production": [result_1,result_2,result_3]
             
         }
@@ -104,6 +104,6 @@ if st.button('Predict Oil Production'):
     image = Image.open('my_plot.png')
 
 # Display the image in the Streamlit app
-    st.image(image, caption='My Matplotlib Plot', use_column_width=True)
+    st.image(image, caption='Matplotlib Plot', use_column_width=True)
 
 
