@@ -2,9 +2,8 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import pickle
-import matplotlib.pyplot as plt
-import sklearn
-from sklearn.model_selection import train_test_split
+
+
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 import tensorflow as tf
@@ -14,12 +13,6 @@ from PIL import Image
 
 loaded_model = load_model("neural_cnn.h5")
 
-
-# # def neural_predict(a,b,c,d,e,f,g,h):
-#     input_data  =np.array([[a,b,c,d,e,f,g,h]])
-#     prediction_3 = loaded_model.predict(input_data)
-#     print(type(prediction_3))
-#     return prediction_3
 
 poly = PolynomialFeatures(degree = 4)
 
