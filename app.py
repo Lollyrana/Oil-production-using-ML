@@ -110,6 +110,6 @@ if st.button('Predict Oil Production'):
     """
     The R² value for linear regression for oil volume production in well 5351 is 0.675.  
     The R² value for polynomial regression (Degree - 4) for oil volume production in well 5351 is 0.943.  
-    The R² value for the neural network in well 5351 is 0.865.
+    The R² value for the neural network (3 hidden layer) in well 5351 is  0.911.
     """
 )
