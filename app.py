@@ -85,7 +85,7 @@ if st.button('Predict Oil Production'):
     st.write(
     pd.DataFrame(
         {
-            "Algorithm use": ["Linear Regression", "Polynomial Regression","Neural Network(ANN)"],
+            "Algorithm used": ["Linear Regression", "Polynomial Regression","Neural Network(ANN)"],
             "Oil Production": [result_1,result_2,result_3]
             
         }
@@ -106,4 +106,10 @@ if st.button('Predict Oil Production'):
 # Display the image in the Streamlit app
     st.image(image, caption='Matplotlib Plot', use_column_width=True)
 
-
+    st.markdown(
+    """
+    The R² value for linear regression for oil volume production in well 5351 is 0.675.  
+    The R² value for polynomial regression (Degree - 4) for oil volume production in well 5351 is 0.943.  
+    The R² value for the neural network in well 5351 is 0.865.
+    """
+)
