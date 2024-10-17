@@ -24,19 +24,45 @@ reg_all = pickle.load(pickle_in_lin)
 
 pickle_in = open("lin_reg.pkl","rb")
 lin_reg = pickle.load(pickle_in)
-
+with open('scaler.pkl', 'rb') as f:
+    scaler = pickle.load(f)
 def predict_1(ON_STREAM_HRS, AVG_DOWNHOLE_TEMPERATURE, AVG_ANNULUS_PRESS, AVG_CHOKE_SIZE_P, AVG_WHP_P, AVG_WHT_P, DP_CHOKE_SIZE, BORE_WAT_VOL):
-    try:
+
+    # Prepare input data in the required shape
+    input_data = [[ON_STREAM_HRS, AVG_DOWNHOLE_TEMPERATURE, AVG_ANNULUS_PRESS, AVG_CHOKE_SIZE_P, AVG_WHP_P, AVG_WHT_P]]
         
-        prediction_1 = reg_all.predict([[ON_STREAM_HRS, AVG_DOWNHOLE_TEMPERATURE, AVG_ANNULUS_PRESS, AVG_CHOKE_SIZE_P, AVG_WHP_P, AVG_WHT_P, DP_CHOKE_SIZE, BORE_WAT_VOL]])
-        return float(prediction_1[0])
-    except Exception as e:
-        print(f"Error in predict_1: {e}")
-        return None
+        
+    transformed_input = scaler.transform(input_data)
+        
+        
+    additional_features = np.array([[DP_CHOKE_SIZE, BORE_WAT_VOL]])
+        
+        # Combine transformed input with the additional features
+        # Note: Make sure to concatenate appropriately
+        # If your scaler was fit on 6 features, combine with 2 additional features
+    full_input = np.concatenate((transformed_input, additional_features), axis=1)
+        
+        # Predict using the loaded model
+    prediction_1 = reg_all.predict(full_input)
+    return prediction_1[0]
+    
 
 def predict_2(ON_STREAM_HRS, AVG_DOWNHOLE_TEMPERATURE, AVG_ANNULUS_PRESS, AVG_CHOKE_SIZE_P, AVG_WHP_P, AVG_WHT_P, DP_CHOKE_SIZE, BORE_WAT_VOL):
+    
     try:
-        value = poly_reg.transform([[ON_STREAM_HRS, AVG_DOWNHOLE_TEMPERATURE, AVG_ANNULUS_PRESS, AVG_CHOKE_SIZE_P, AVG_WHP_P, AVG_WHT_P, DP_CHOKE_SIZE, BORE_WAT_VOL]])
+        input_data = [[ON_STREAM_HRS, AVG_DOWNHOLE_TEMPERATURE, AVG_ANNULUS_PRESS, AVG_CHOKE_SIZE_P, AVG_WHP_P, AVG_WHT_P]]
+        
+        
+        transformed_input = scaler.transform(input_data)
+        additional_features = np.array([[DP_CHOKE_SIZE, BORE_WAT_VOL]])
+        
+        # Combine transformed input with the additional features
+        # Note: Make sure to concatenate appropriately
+        # If your scaler was fit on 6 features, combine with 2 additional features
+        full_input = np.concatenate((transformed_input, additional_features), axis=1)
+        
+        
+        value = poly_reg.transform(full_input)
         prediction_2 = lin_reg.predict(value)
         if prediction_2<0 :
             prediction_2 = ["Not defined"]
@@ -47,8 +73,16 @@ def predict_2(ON_STREAM_HRS, AVG_DOWNHOLE_TEMPERATURE, AVG_ANNULUS_PRESS, AVG_CH
 
 def neural_predict(a, b, c, d, e, f, g, h):
     try:
-        input_data  =np.array([[a,b,c,d,e,f,g,h]])
-        prediction_3 = loaded_model.predict(input_data)
+        input_data  =[[a,b,c,d,e,f]]
+
+        transformed_input = scaler.transform(input_data)
+        additional_features = np.array([[DP_CHOKE_SIZE, BORE_WAT_VOL]])
+        
+        # Combine transformed input with the additional features
+        # Note: Make sure to concatenate appropriately
+        # If your scaler was fit on 6 features, combine with 2 additional features
+        full_input = np.concatenate((transformed_input, additional_features), axis=1)
+        prediction_3 = loaded_model.predict(full_input)
         
         return float(prediction_3[0])
     except Exception as e:
@@ -60,14 +94,14 @@ st.sidebar.title("Input Production Parameters")
 
 
 
-ON_STREAM_HRS = st.sidebar.number_input('ON_STREAM_HRS', min_value=0.0, max_value=30.0, value=0.960000, step=0.00001, format="%.5f")
-AVG_DOWNHOLE_TEMPERATURE = st.sidebar.number_input('AVG_DOWNHOLE_TEMPERATURE', min_value=0.0, max_value=200.0, value= 0.963303, step=0.00001, format="%.5f")
-AVG_ANNULUS_PRESS = st.sidebar.number_input('AVG_ANNULUS_PRESSURE', min_value=0.0, max_value=50.0, value=0.000000, step=0.00001, format="%.5f")
-AVG_CHOKE_SIZE_P = st.sidebar.number_input('AVG_CHOKE_SIZE_PRESSURE', min_value=0.0, max_value=100.0, value=0.360000, step=0.00001, format="%.5f")
-AVG_WHP_P = st.sidebar.number_input('AVG_WHP_PRESSURE', min_value=0.0, max_value=200.0, value=0.583942, step=0.00001, format="%.5f")
-AVG_WHT_P = st.sidebar.number_input('AVG_WHT_PRESSURE', min_value=0.0, max_value=100.0, value=0.797872, step=0.00001, format="%.5f")
-DP_CHOKE_SIZE = st.sidebar.number_input('DP_CHOKE_SIZE', min_value=0.0, max_value=200.0, value=47.000000, step=0.00001, format="%.5f")
-BORE_WAT_VOL = st.sidebar.number_input('BORE_WAT_VOL', min_value=-500.0, max_value=3500.0, value=2.000000, step=0.00001, format="%.5f")
+ON_STREAM_HRS = st.sidebar.number_input('ON_STREAM_HRS (Hrs)', min_value=0.0, max_value=30.0, value=24.000000, step=0.00001, format="%.5f")
+AVG_DOWNHOLE_TEMPERATURE = st.sidebar.number_input('AVG_DOWNHOLE_TEMPERATURE (Celsius)', min_value=0.0, max_value=200.0, value= 106.184000, step=0.00001, format="%.5f")
+AVG_ANNULUS_PRESS = st.sidebar.number_input('AVG_ANNULUS_PRESSURE (Bar)', min_value=0.0, max_value=50.0, value=14.872000, step=0.00001, format="%.5f")
+AVG_CHOKE_SIZE_P = st.sidebar.number_input('AVG_CHOKE_SIZE_PRESSURE(Bar)', min_value=0.0, max_value=100.0, value=15.922480, step=0.00001, format="%.5f")
+AVG_WHP_P = st.sidebar.number_input('AVG_WHP_PRESSURE (Bar)', min_value=0.0, max_value=200.0, value=45.07301, step=0.00001, format="%.5f")
+AVG_WHT_P = st.sidebar.number_input('AVG_WHT_PRESSURE (Bar)', min_value=0.0, max_value=100.0, value=65.5590, step=.00001, format="%.5f")
+DP_CHOKE_SIZE = st.sidebar.number_input('DP_CHOKE_SIZE (%)', min_value=0.0, max_value=200.0, value=16.866000, step=0.00001, format="%.5f")
+BORE_WAT_VOL = st.sidebar.number_input('BORE_WAT_VOL (Sm3)', min_value=-500.0, max_value=3500.0, value=526.000000, step=0.00001, format="%.5f")
 
 
 
@@ -86,8 +120,9 @@ if st.button('Predict Oil Production'):
     pd.DataFrame(
         {
             "Algorithm used": ["Linear Regression", "Polynomial Regression","Neural Network(ANN)"],
-            "Oil Production": [result_1,result_2,result_3]
-            
+            "Oil Production in  Sm3/day": [result_1,result_2,result_3] ,
+           
+
         }
      )
    )
